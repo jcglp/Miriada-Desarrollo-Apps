@@ -1,7 +1,7 @@
 var app = {
   inicio : function(){
     this.iniciaBotones();
-    this.iniciaFastClick();
+    //this.iniciaFastClick();
     this.iniciaHammer();
   },
 
@@ -28,6 +28,11 @@ var app = {
 
     zona.addEventListener('webkitAnimationEnd', function(e) {
       zona.className = '';
+    });
+
+    hammertime.on('tap', function(ev) {
+      zona.className = 'tap';
+
     });
 
     hammertime.on('doubletap', function(ev) {

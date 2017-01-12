@@ -3,12 +3,12 @@ body {
 }
 
 body.claro{
-  background-color: #8de1bd;
+  -webkit-animation: fondo-claro 1.5s 1;
 
 }
 
 body.oscuro{
-  background-color: #577a76;
+  -webkit-animation: fondo-oscuro 1.5s 1;
 
 }
 
@@ -33,11 +33,16 @@ button {
 }
 
 /* ANIMACIONES */
+#zona-gestos.tap{
+  -webkit-animation: zona-amarailla 100ms 1;
+}
+
 #zona-gestos.doubletap{
   /* Cuando la zona de gestos tiene la clase double tap
   Se lana la animacion pulsacion que dura 1.5 segundos y se repite 1 vez*/
   -webkit-animation: pulsacion 1.5s 1;
 }
+
 
 #zona-gestos.press{
   -webkit-animation: presion 1.5s 1;
@@ -55,6 +60,35 @@ button {
 #zona-gestos.rotate{
   -webkit-animation: rotate 1.5s 1;
 }
+
+
+
+@-webkit-keyframes fondo-claro {
+
+  100% {
+    background-color: #8de1bd;
+  }
+
+}
+
+@-webkit-keyframes fondo-oscuro {
+
+  100% {
+    background-color: #577a76;
+  }
+
+}
+
+
+@-webkit-keyframes zona-amarailla {
+
+  100% {
+    background-color: yellow;
+  }
+
+}
+
+
 
 
 
