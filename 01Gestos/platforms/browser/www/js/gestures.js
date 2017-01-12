@@ -1,10 +1,37 @@
 var app = {
   inicio : function(){
+    this.iniciaBotones();
+    this.iniciaFastClick();
+    this.iniciaHammer();
+  },
+
+  iniciaFastClick : function () {
+    FastClick.attach(document.body);
+
+  },
+
+  iniciaBotones : function () {
     var botonClaro  = document.querySelector('#claro');
     var botonOscuro = document.querySelector('#oscuro');
 
     botonClaro.addEventListener('click', this.ponloClaro, false);
     botonOscuro.addEventListener('click', this.ponloOscuro, false);
+
+  },
+
+  iniciaHammer : function () {
+    var zona = document.getElementById('zona-gestos');
+    var hammertime = new Hammer(zona);
+
+    hammertime.get('pinch').set({ enable : true });
+    hammertime.get('rotate').set({ enable : true });
+
+
+    // Quitamos pan y pinch, porque enmascarn la accon de swipe y rotate y sino no saldrían    
+    // hammertime.on('tap doubletap pan swipe press pinch rotate', function(ev) {
+    hammertime.on('tap doubletap  swipe press  rotate', function(ev) {
+      document.querySelector('#info').innerHTML = ev.type + '!';
+    });
 
   },
 
@@ -21,7 +48,6 @@ var app = {
 if ('addEventListener' in document ) {
   document.addEventListener('DOMContentLoaded', function(){
     app.inicio();
-    FastClick.attach(document.body);
-    
   }, false );
+
 }
