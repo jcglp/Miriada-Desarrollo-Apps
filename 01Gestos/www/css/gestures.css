@@ -32,11 +32,76 @@ button {
 
 }
 
+/* ANIMACIONES */
+#zona-gestos.doubletap{
+  /* Cuando la zona de gestos tiene la clase double tap
+  Se lana la animacion pulsacion que dura 1.5 segundos y se repite 1 vez*/
+  -webkit-animation: pulsacion 1.5s 1;
+}
 
-#info {
-  color: #ffffff;
-  font-size: 2em;
-  margin-top: 10px;
-  text-transform: uppercase;
+#zona-gestos.press{
+  -webkit-animation: presion 1.5s 1;
+}
 
+#zona-gestos.swipe-derecha{
+  -webkit-animation: swipe-derecha 1.5s 1;
+}
+
+
+#zona-gestos.swipe-izquierda{
+  -webkit-animation: swipe-izquierda 1.5s 1;
+}
+
+#zona-gestos.rotate{
+  -webkit-animation: rotate 1.5s 1;
+}
+
+
+
+@-webkit-keyframes pulsacion {
+  /*La definición del a animacion
+  el nombre es pulsación
+  los % indican el porcentaje de aniamción
+  asi pues decimos que al inicio (0%) y fin (100%)
+  de la animaición ha de tener el color #7ba67.
+  A la mitad (50%) el color ha e ser #8de1bd, css
+  ya se encarga de hacer las transiciones de colores*/
+  0%, 100% {
+    background-color: #7fba67;
+  }
+  50% {
+    background-color: #8de1bd;
+  }
+}
+@-webkit-keyframes presion {
+  0%, 100% {
+    background-color: #7fba67;
+  }
+  50% {
+    background-color: #577a76;
+  }
+}
+
+@-webkit-keyframes swipe-derecha {
+  0%, 100% {
+    margin-left: 0%;
+  }
+  50% {
+    margin-left: 100%;
+  }
+}
+
+@-webkit-keyframes swipe-izquierda {
+  0%, 100% {
+    width: 100%;
+  }
+  50% {
+    width: 0%;
+  }
+}
+
+@-webkit-keyframes rotate {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }

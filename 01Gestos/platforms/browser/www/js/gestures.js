@@ -26,12 +26,38 @@ var app = {
     hammertime.get('pinch').set({ enable : true });
     hammertime.get('rotate').set({ enable : true });
 
-
-    // Quitamos pan y pinch, porque enmascarn la accon de swipe y rotate y sino no saldrían    
-    // hammertime.on('tap doubletap pan swipe press pinch rotate', function(ev) {
-    hammertime.on('tap doubletap  swipe press  rotate', function(ev) {
-      document.querySelector('#info').innerHTML = ev.type + '!';
+    zona.addEventListener('webkitAnimationEnd', function(e) {
+      zona.className = '';
     });
+
+    hammertime.on('doubletap', function(ev) {
+      zona.className = 'doubletap';
+
+    });
+
+    hammertime.on('press', function(ev) {
+      zona.className = 'press';
+
+    });
+
+    hammertime.on('swipe', function(ev) {
+
+      var clase = undefined;
+      direccion = ev.direction;
+
+      if (direccion==4) clase = 'swipe-derecha';
+      if (direccion==2) clase = 'swipe-izquierda';
+
+      zona.className = clase;
+
+    });
+
+    hammertime.on('rotate', function(ev) {
+      var umbral = 25; // Para recoger un desplazamiento significativo
+      if (ev.distance > umbral)  zona.className = 'rotate';
+
+    });
+
 
   },
 
