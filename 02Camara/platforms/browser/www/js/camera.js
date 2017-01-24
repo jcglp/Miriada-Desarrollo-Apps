@@ -10,20 +10,27 @@ var app = {
 
   iniciaBotones: function() {
     var buttonAction = document.querySelector('#button-action');
-    buttonAction.addEventListener('click', this.tomarFoto);
+    buttonAction.addEventListener('click', function(){
+      app.cargarFoto(Camera.PictureSourceType.CAMERA);
+    });
 
     var filterButtons = document.querySelectorAll('.button-filter');
     filterButtons[0].addEventListener('click', function(){ app.aplicarFiltro('gray'); });
     filterButtons[1].addEventListener('click', function(){ app.aplicarFiltro('negative'); });
     filterButtons[2].addEventListener('click', function(){ app.aplicarFiltro('sepia'); });
 
+    var buttonGallery = document.querySelector('#button-gallery');
+    buttonGallery.addEventListener('click', function(){
+      app.cargarFoto(Camera.PictureSourceType.PHOTOLIBRARY);
+    });
   },
 
-  tomarFoto:function(){
+  cargarFoto:function(PictureSourceType){
     // alert('tomar foto');
     var opciones = {
       quality: 50,
-      destinationType: Camera.DestinationType.FILE_URI,
+      sourceType: PictureSourceType,
+      destinationType: Camera.DestinationType.FILE_URI, //Aqui se puede escoger los datos enbruto en lugar de un FILE_URI
       targetWidth:300,
       targetHeight: 300,
       correctOrientation:true
@@ -64,7 +71,7 @@ var app = {
     effects[filterName](imageData.data);
     context.putImageData(imageData, 0, 0);
 
-  }
+  },
 
 
 };
