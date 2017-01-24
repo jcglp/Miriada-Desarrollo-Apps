@@ -26,14 +26,16 @@ var app = {
   },
 
   cargarFoto:function(PictureSourceType){
-    // alert('tomar foto');
     var opciones = {
-      quality: 50,
+      quality: 75,
       sourceType: PictureSourceType,
-      destinationType: Camera.DestinationType.FILE_URI, //Aqui se puede escoger los datos enbruto en lugar de un FILE_URI
+      cameraDirection: Camera.Direction.FRONT, /*24/01/207 no funciona en Androiod      */
+      destinationType: Camera.DestinationType.FILE_URI, /*Aqui se puede escoger los datos enbruto en lugar de un FILE_URI*/
+      saveToPhotoAlbum: true,
       targetWidth:300,
       targetHeight: 300,
       correctOrientation:true
+
     };
     navigator.camera.getPicture(app.fotoTomada, app.errorAlTomarFoto, opciones);
   },
