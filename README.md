@@ -9,3 +9,6 @@ Cada carpeta corresponde a un tema del curos.
 =========
 Uso de la librería hammer.js para capturar gestos en el dispositivos.
 
+02 Camara
+=========
+Uso de la librearía xxxx para acceder a la camara tomar fotos y colocarlas en un canvas html para su manipulación.
