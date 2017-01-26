@@ -11,4 +11,9 @@ Uso de la librería hammer.js para capturar gestos en el dispositivos.
 
 02 Camara
 =========
-Uso de la librearía xxxx para acceder a la camara tomar fotos y colocarlas en un canvas html para su manipulación.
+Uso de cordova para acceder a la camara tomar fotos y colocarlas en un canvas html para su manipulación como filtros a traves de js
+
+03 Localización
+===============
+Uso de la libreara leaflet.js ( http://leafletjs.com/  ) para uso interativo de mapas y con los mapas
+facilitados por https://www.mapbox.com previo registro, para obtener api-key
