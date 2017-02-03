@@ -17,3 +17,8 @@ Uso de cordova para acceder a la camara tomar fotos y colocarlas en un canvas ht
 ===============
 Uso de la libreara leaflet.js ( http://leafletjs.com/  ) para uso interativo de mapas y con los mapas
 facilitados por https://www.mapbox.com previo registro, para obtener api-key
+
+04 Sensores
+===========
+Creacion de un juego que hace uso de los sensonres del dispositivo, como el acelerometro
+Usamos la librería phaser para el desarrollo del juego ( https://phaser.io/ )
