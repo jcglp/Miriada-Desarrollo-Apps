@@ -9,6 +9,9 @@ var app={
     alto  = document.documentElement.clientHeight;
     ancho = document.documentElement.clientWidth;
 
+    colores = ["#7E5109", "#9C640C", "#D68910", "#D68910", "#F39C12"
+              ,"#F5B041", "#F8C471", "#FAD7A0", "#FDEBD0", "#FEF5E7"]
+
     app.vigilaSensores();
     app.iniciaJuego();
   },
@@ -18,21 +21,25 @@ var app={
     function preload() {
       // Arrancamos el motor de físicas de phaser, ARCADE qeu es el básico
       game.physics.startSystem(Phaser.Physics.ARCADE);
-      game.stage.backgroundColor = '#f27d0c';
+      game.stage.backgroundColor = colores[dificultad];
       game.load.image('bola', 'assets/bola.png');
       game.load.image('objetivo', 'assets/objetivo.png');
+      game.load.image('objetivo2', 'assets/objetivo2.png');
 
     }
 
     function create() {
-      scoreText = game.add.text(16, 16, puntuacion, { fontSize:'100px', fill:'#757676'});
+
+      scoreText = game.add.text(16, 16, (puntuacion + ' [' + dificultad +']'), { fontSize:'100px', fill:'#757676'});
       // Convertimos las imagenes en sprites
       objetivo = game.add.sprite(app.inicioX(), app.inicioY(), 'objetivo');
+      objetivo2 = game.add.sprite(app.inicioX(), app.inicioY(), 'objetivo2');
       bola = game.add.sprite(app.inicioX(), app.inicioY(), 'bola');
 
       //Indicamos que se aplique la física sobre la bola
       game.physics.arcade.enable(bola);
       game.physics.arcade.enable(objetivo);
+      game.physics.arcade.enable(objetivo2);
       //Al cuerpo de la bola le indicamos que gestione las colisiones con el borde de la pantalla
       bola.body.collideWorldBounds = true;
       //Cuando choque genera una señal
@@ -46,8 +53,15 @@ var app={
       var factorDificultad = (300 + (dificultad * 100));
       bola.body.velocity.y = (velocidadY * factorDificultad);
       bola.body.velocity.x = (velocidadX * (-1 * factorDificultad));
-      
+
       game.physics.arcade.overlap(bola, objetivo, app.incrementaPuntuacion, null, this);
+      game.physics.arcade.overlap(bola, objetivo2, app.incrementaPuntuacion2, null, this);
+
+      if(bola.body.checkWorldBounds()===false){
+        game.stage.backgroundColor = colores[dificultad]; //'#f27d0c';
+      }else{
+        game.stage.backgroundColor='#ff3300';
+      }
 
     }
 
@@ -58,12 +72,26 @@ var app={
 
   incrementaPuntuacion: function(){
     puntuacion = puntuacion+1;
-    scoreText.text = puntuacion;
+    scoreText.text = puntuacion + ' [' + dificultad +']';
 
     objetivo.body.x = app.inicioX();
     objetivo.body.y = app.inicioY();
 
-    if (puntuacion > 0){
+    if ( (puntuacion > 0) && (dificultad <9) ){
+      dificultad = dificultad + 1;
+
+    }
+
+  },
+
+  incrementaPuntuacion2: function(){
+    puntuacion = puntuacion+10;
+    scoreText.text = puntuacion + ' [' + dificultad +']';
+
+    objetivo2.body.x = app.inicioX();
+    objetivo2.body.y = app.inicioY();
+
+    if ( (puntuacion > 0) && (dificultad <9) ){
       dificultad = dificultad + 1;
     }
 
@@ -71,7 +99,13 @@ var app={
 
   decrementaPuntuacion: function(){
     puntuacion = puntuacion-1;
-    scoreText.text = puntuacion;
+    scoreText.text = puntuacion + ' [' + dificultad +']';
+
+    if (puntuacion < 0){
+      dificultad = 0;
+    }
+
+
   },
 
   inicioX: function(){
