@@ -17,6 +17,7 @@ body {
 }
 
 .note-editor{
+  display: none;
   padding: 10px;
 }
 
@@ -34,8 +35,10 @@ body {
   text-align: center;
 }
 
-.header{
+.header {
   padding: 0 10px;
   color: #666;
   text-align: center;
+  height: 48.4px;
+  line-height: 48.4px;
 }
