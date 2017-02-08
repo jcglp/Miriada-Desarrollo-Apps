@@ -3,6 +3,7 @@ var app = {
     "notas" : [{"titulo":"Comprar pan", "contenido":"Oferta en la panadería de la esquina"}]
   },
 
+
   inicio : function(){
     this.iniciaFastClick();
     this.iniciaBotones();
@@ -23,7 +24,6 @@ var app = {
   },
 
   mostrarEditor : function(){
-    alert ('mostrar editar');
     document.getElementById('titulo').value = "";
     document.getElementById('comentario').value = "";
     document.getElementById('note-editor').style.display = "block";
@@ -32,17 +32,115 @@ var app = {
   },
 
   salvarNota: function(){
-
-  }
-  refrescarLista: function(){
+    app.construirNota();
+    app.ocultarEditor();
+    app.refrescarLista();
+    app.grabarDatos();
 
   },
 
-}
+  refrescarLista: function(){
+    var div = document.getElementById('notes-list');
+    div.innerHTML = this.anadirNotasALista();
+  },
 
+  anadirNotasALista: function(){
+    var notas = this.model.notas;
+    var notasDivs = '';
+    for (var i in notas) {
+      var titulo = notas[i].titulo;
+      notasDivs = notasDivs + this.anadirNota(i, titulo);
+    }
+    return notasDivs;
+  },
 
-if ('addEventListener' in document) {
-  document.addEventListener('DOMContentLoaded', function() {
+  anadirNota: function(id, titulo){
+    return "<div class='note-item' id='notas[" + id + "]'>" + titulo + "</div>";
+  },
+
+  construirNota: function(){
+    var notas = app.model.notas;
+    notas.push({"titulo": app.extraerTitulo(), "contenido":app.extraerComentario()});
+
+  },
+
+  extraerTitulo: function(){
+    return document.getElementById('titulo').value;
+  },
+
+  extraerComentario: function(){
+    return document.getElementById('comentario').value;
+  },
+
+  ocultarEditor: function(){
+    document.getElementById("note-editor").style.display = "none";
+  },
+
+  grabarDatos: function(){
+    // Para la persistencia llamamos a cordova para que nos de donde realizar la persistencia
+    // si todo va bien llamaremos a gotFS
+    window.resolveLocalFileSystemURL(cordova.file.externalApplicationStorageDirectory, this.gotFS, this.fail);
+  },
+
+  gotFS: function(fileSystem){
+    fileSystem.getFile("files/"+"model.json", {create: true, exclusive: false}, app.gotFileEntry, app.fail);
+
+  },
+
+  gotFileEntry: function(fileEntry) {
+    fileEntry.createWriter(app.gotFileWriter, app.fail);
+  },
+
+  gotFileWriter: function(writer) {
+    writer.onwriteend = function(evt) {
+      console.log("datos grabados en externalApplicationStorageDirectory");
+    };
+    writer.write(JSON.stringify(app.model));
+  },
+
+  leerDatos: function(){
+    console.log('leerDatos');
+    window.resolveLocalFileSystemURL(cordova.file.externalApplicationStorageDirectory, this.obtenerFS, this.fail);
+  },
+
+  obtenerFS: function(fileSystem){
+    console.log('obtenerFS');
+    fileSystem.getFile("files/"+"model.json", null, app.obtenerFileEntry, app.noFile);
+
+  },
+
+  noFile: function(error) {
     app.inicio();
-  }, false);
+  },
+
+  obtenerFileEntry: function(fileEntry) {
+    console.log('obtenerFileEntry');
+    fileEntry.file(app.leerFile, app.fail);
+  },
+
+  leerFile: function(file) {
+    var reader = new FileReader();
+    reader.onloadend = function(evt) {
+      var data = evt.target.result;
+      app.model = JSON.parse(data);
+      app.inicio();
+    };
+    reader.readAsText(file);
+  },
+
+  fail: function(error) {
+    console.log('ERROR => ' + error.code );
+  },
+
+
+};
+
+
+
+if ('addEventListener' in document ) {
+  document.addEventListener('DOMContentLoaded', function(){
+    console.log('INICIO APP NOTES');
+    app.leerDatos();
+  }, false );
+
 }

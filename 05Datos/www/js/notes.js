@@ -35,6 +35,8 @@ var app = {
     app.construirNota();
     app.ocultarEditor();
     app.refrescarLista();
+    app.grabarDatos();
+
   },
 
   refrescarLista: function(){
@@ -61,15 +63,74 @@ var app = {
     notas.push({"titulo": app.extraerTitulo(), "contenido":app.extraerComentario()});
 
   },
+
   extraerTitulo: function(){
     return document.getElementById('titulo').value;
   },
+
   extraerComentario: function(){
     return document.getElementById('comentario').value;
   },
+
   ocultarEditor: function(){
     document.getElementById("note-editor").style.display = "none";
-  }
+  },
+
+  grabarDatos: function(){
+    // Para la persistencia llamamos a cordova para que nos de donde realizar la persistencia
+    // si todo va bien llamaremos a gotFS
+    window.resolveLocalFileSystemURL(cordova.file.externalApplicationStorageDirectory, this.gotFS, this.fail);
+  },
+
+  gotFS: function(fileSystem){
+    fileSystem.getFile("files/"+"model.json", {create: true, exclusive: false}, app.gotFileEntry, app.fail);
+
+  },
+
+  gotFileEntry: function(fileEntry) {
+    fileEntry.createWriter(app.gotFileWriter, app.fail);
+  },
+
+  gotFileWriter: function(writer) {
+    writer.onwriteend = function(evt) {
+      console.log("datos grabados en externalApplicationStorageDirectory");
+    };
+    writer.write(JSON.stringify(app.model));
+  },
+
+  leerDatos: function(){
+    console.log('leerDatos');
+    window.resolveLocalFileSystemURL(cordova.file.externalApplicationStorageDirectory, this.obtenerFS, this.fail);
+  },
+
+  obtenerFS: function(fileSystem){
+    console.log('obtenerFS');
+    fileSystem.getFile("files/"+"model.json", null, app.obtenerFileEntry, app.noFile);
+
+  },
+
+  noFile: function(error) {
+    app.inicio();
+  },
+
+  obtenerFileEntry: function(fileEntry) {
+    console.log('obtenerFileEntry');
+    fileEntry.file(app.leerFile, app.fail);
+  },
+
+  leerFile: function(file) {
+    var reader = new FileReader();
+    reader.onloadend = function(evt) {
+      var data = evt.target.result;
+      app.model = JSON.parse(data);
+      app.inicio();
+    };
+    reader.readAsText(file);
+  },
+
+  fail: function(error) {
+    console.log('ERROR => ' + error.code );
+  },
 
 
 };
@@ -78,7 +139,8 @@ var app = {
 
 if ('addEventListener' in document ) {
   document.addEventListener('DOMContentLoaded', function(){
-    app.inicio();
+    console.log('INICIO APP NOTES');
+    app.leerDatos();
   }, false );
 
 }
