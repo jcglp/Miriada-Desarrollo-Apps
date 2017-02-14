@@ -1,14 +1,21 @@
 var app={
   inicio: function(){
     DIAMETRO_BOLA = 50;
+    DIAMETRO_MURO = 50;
+
+    var xObjetivo;
 
     alto  = document.documentElement.clientHeight;
     ancho = document.documentElement.clientWidth;
+
+    var groupMuro;
+    muro = [];
 
     vida = 5;
 
     app.vigilaSensores();
     app.iniciaJuego();
+
   },
 
   iniciaJuego: function(){
@@ -18,14 +25,17 @@ var app={
       game.physics.startSystem(Phaser.Physics.ARCADE);
       game.stage.backgroundColor = "#7B7D7D"
       game.load.image('bola', 'assets/bola.png');
-
+      game.load.image('wall', 'assets/wall.png');
+      game.load.image('objetivo', 'assets/target.png');
 
     }
 
     function create() {
+      scoreText = game.add.text(16, 16, vida, { fontSize:'80px', fill:'#17202A'});
 
-      scoreText = game.add.text(16, 16, (vida + '-'+alto+'-'+ancho), { fontSize:'80px', fill:'#17202A'});
-
+      /*
+      * BOLA
+      */
       bola = game.add.sprite(app.inicioX(), app.inicioY(), 'bola');
 
       //Indicamos que se aplique la física sobre la bola
@@ -36,7 +46,39 @@ var app={
       //Cuando choque genera una señal
       bola.body.onWorldBounds = new Phaser.Signal();
       //a la señal, le añadimos el manejador
-      bola.body.onWorldBounds.add(app.decrementaPuntuacion, this);
+      // bola.body.onWorldBounds.add(app.decrementaPuntuacion, this);
+
+      /*
+      * MURO
+      */
+      app.crearMuro();
+      groupMuro = game.add.group();
+
+      var xWall = Math.floor(ancho / 2) - DIAMETRO_MURO;
+      for (i = 0; i < muro.length; i++) {
+        //console.log('creando un muro ' + i);
+        //game.add.sprite(xWall, (i * DIAMETRO_MURO), 'wall');
+
+       if( muro[i][0]) {
+         muroAux = game.add.sprite(xWall, (i * DIAMETRO_MURO), 'wall');
+         game.physics.arcade.enable(muroAux);
+         muroAux.body.immovable = true;
+         //muro[i][1] = muroAux;
+         groupMuro.add(muroAux);
+         //groupMuro.create(xWall, (i * DIAMETRO_MURO), 'wall');
+
+       }
+
+      }
+
+      /*
+      * TARGET
+      */
+      xObjetivo = Math.floor(ancho / 2) + DIAMETRO_MURO;
+      objetivo = game.add.sprite(xObjetivo, app.inicioY(), 'objetivo');
+
+      //Indicamos que se aplique la física sobre la bola
+      game.physics.arcade.enable(objetivo);
 
     }
 
@@ -44,9 +86,18 @@ var app={
       var factorDificultad = 300 ;
       bola.body.velocity.y = (velocidadY * factorDificultad);
       bola.body.velocity.x = (velocidadX * (-1 * factorDificultad));
+
+      this.physics.arcade.collide(bola, groupMuro, null, null, this);
+
+
+      this.physics.arcade.overlap(bola, objetivo, app.incrementaPuntuacion, null, this);
 /*
-      game.physics.arcade.overlap(bola, objetivo, app.incrementaPuntuacion, null, this);
-      game.physics.arcade.overlap(bola, objetivo2, app.incrementaPuntuacion2, null, this);*/
+      for (i = 0; i < muro.length; i++) {
+        if( muro[i][0]) {
+          this.physics.arcade.collide(bola, muro[i][1], null, null, this);
+        }
+      }*/
+
 
       if(bola.body.checkWorldBounds()===false){
         game.stage.backgroundColor = "#7B7D7D";
@@ -61,46 +112,10 @@ var app={
     var game = new Phaser.Game(ancho, alto, Phaser.CANVAS, 'phaser', estados);
   },
 
-/*incrementaPuntuacion: function(){
-    puntuacion = puntuacion+1;
-    scoreText.text = puntuacion + ' [' + dificultad +']';
-
-    objetivo.body.x = app.inicioX();
-    objetivo.body.y = app.inicioY();
-
-    if ( (puntuacion > 0) && (dificultad <9) ){
-      dificultad = dificultad + 1;
-
-    }
-
-  },
-
-  incrementaPuntuacion2: function(){
-    puntuacion = puntuacion+10;
-    scoreText.text = puntuacion + ' [' + dificultad +']';
-
-    objetivo2.body.x = app.inicioX();
-    objetivo2.body.y = app.inicioY();
-
-    if ( (puntuacion > 0) && (dificultad <9) ){
-      dificultad = dificultad + 1;
-    }
-
-  },
-
-  decrementaPuntuacion: function(){
-    puntuacion = puntuacion-1;
-    scoreText.text = puntuacion + ' [' + dificultad +']';
-
-    if (puntuacion < 0){
-      dificultad = 0;
-    }
-
-
-  },*/
 
   inicioX: function(){
-    return app.numeroAleatorioHasta(ancho - DIAMETRO_BOLA );
+    // return app.numeroAleatorioHasta(ancho - DIAMETRO_BOLA );
+    return 50;
   },
 
   inicioY: function(){
@@ -114,7 +129,7 @@ var app={
   vigilaSensores: function(){
 
     function onError() {
-        console.log('onError!');
+        console.log('onError.!');
     }
 
     function onSuccess(datosAceleracion){
@@ -122,14 +137,57 @@ var app={
     }
 
     navigator.accelerometer.watchAcceleration(onSuccess, onError,{ frequency: 10 });
+
   },
 
-  
+
   registraDireccion: function(datosAceleracion){
     velocidadX = datosAceleracion.x ;
     velocidadY = datosAceleracion.y ;
 
   },
+
+  crearMuro : function(){
+    var longitudMuro = (alto / 50);
+    for (i = 0; i < longitudMuro; i++) {
+      if (i <= 4 ){
+        muro[i]= [true, null];
+
+      } else if (i >= (longitudMuro-5)) {
+        muro[i]= [true, null];
+
+      } else {
+        muro[i]= [false, null];
+      }
+
+    }
+
+  },
+
+  incrementaPuntuacion: function(){
+    vida = vida + 1;
+    scoreText.text = vida;
+    //console.log('[LOG]='+ xObjetivo);
+    if ( xObjetivo >= (Math.floor(ancho / 2)) ) {
+      xObjetivo = Math.floor(ancho / 2) - (DIAMETRO_MURO*3);
+    } else {
+      xObjetivo = Math.floor(ancho / 2) + DIAMETRO_MURO;
+    }
+
+    objetivo.body.x = xObjetivo;
+    objetivo.body.y = app.inicioY();
+
+
+  },
+
+  wallCollision : function(){
+    vida = vida - 1;
+    scoreText.text = vida;
+  },
+
+
+
+
 
 
 };

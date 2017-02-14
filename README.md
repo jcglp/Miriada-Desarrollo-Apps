@@ -22,3 +22,19 @@ facilitados por https://www.mapbox.com previo registro, para obtener api-key
 ===========
 Creacion de un juego que hace uso de los sensonres del dispositivo, como el acelerometro
 Usamos la librería phaser para el desarrollo del juego ( https://phaser.io/ )
+
+04 JUEGO
+========
+Creación de un juego sencillo como parte del ejercicio del módulo 4 Sensores. Una bola que ha de encontrar un hueco
+en el muro para tocar un objetivo, que aparece al otro lado del juego
+
+05 Datos
+===========
+Creación de una aplicación de notas. Por parte grabar en un array en memoria, luego hacerlo persistennte, grabando
+en el sistema de ficheros del dispositivo.
+
+06 Cuestiones Avanzadas
+=======================
+* Uso de Firebase como proveedor de servicios, como almacenamiento, bd, servicio de autenticación, mensajería push...
+* https://build.phonegap.com/ para el empaquetado de aplicaciones
+* Uso de http://framework7.io/ como framework para el desarrollo de apps con gran cantidad de componentes pregenerados
